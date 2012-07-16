@@ -7,23 +7,24 @@ Get 1000 tweets related to
     #2012olympics
 using the Twitter API
 
-Refer to the README of Twitter.TAP by Rada
+Original plan: Use REST API (hangs)
+Final plan: use SEARCH API with URL-encoding (%23 for # etc)
 """
 import sys
 import commands
 
-def error():
-    print 'get1000Tweets.py: ERROR. Please provide the script to execute and the name of the query file'
-    print 'Exiting now.'
-    sys.exit()
+BASEQUERY = "http://search.twitter.com/search.json?q="
+queries = ['%23olympics', '%232012olympics', '%23londonolympics', 'olympics', '']
 
-def callTwitterAPI(exec_file, query_file):
-    commands.getstatusoutput('perl %s %s' % (exec_file, query_file))
+def callTwitterAPI():
+    counter = 1
+    for query in queries:
+        this_query = BASEQUERY + query
+        commands.getstatusoutput('wget -O %d.json "%s"' % (counter, this_query))
+        counter += 1
 
 def main():
-    if len(sys.argv) != 3:
-        error()
-    callTwitterAPI(sys.argv[1], sys.argv[2])
+    callTwitterAPI()
 
 if __name__ == '__main__':
     main()
