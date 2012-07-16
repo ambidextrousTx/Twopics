@@ -1,0 +1,23 @@
+Workflow:
+    - reading:  
+        - Text Mining People
+        - Google Scholar 'topic identification tweets'
+    - decide on the topic
+        - topic identification for tweets
+    - decide on data
+        - one comes from Twitter using the Twitter API
+        - one from Chris's Wikipedia mining
+    - decide on resources
+        - Twitter API
+        - Hadoop, Mahout, Pig
+        - ML clustering
+        - use the Text Mining People
+        - Genetic algorithm or another evolutionary?
+    - start GitHub repo
+    - delegate/ divide tasks
+    - decide over languages, API
+    - collaborate over GitHub
+    - have code run
+    - try to make it multilingual
+    -   German, Spanish, Turkish
+    - evaluate?
