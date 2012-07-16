@@ -8,6 +8,7 @@ Cleaning and preprocessing the ~1300 tweets
 - pick top 4 context words for each keyword
 - produce (id, [(keyword, [context]) ...]) tuples for each tweet
 """
+import re
 import sys
 
 def error():
@@ -16,12 +17,34 @@ def error():
     sys.exit()
 
 def getAllText(files):
-    
+    allTweets = []
+    for f in files:
+        print 'Processing %s' % f
+        with open(f, 'r') as fHandle:
+            lines = ''
+            for line in fHandle:
+                lines += line.strip()
+            chunks = lines.split('created_at')
+            print 'Found {0} chunks'.format(len(chunks))
+            for chunk in chunks:
+                try:
+                    pattern = re.search(r'\"text\":\"(.*?)\"', chunk)
+                    tweet = pattern.group(1)
+                    allTweets.append(tweet)
+                except AttributeError:
+                    pass
+
+    fHandle = open('allTweets.txt', 'w')
+    counter = 0
+    for tweet in allTweets:
+        fHandle.write('{0} :: {1}\n'.format(counter, tweet))
+        counter += 1
 
 def main():
     if len(sys.argv) < 2:
         error()
-    
+    files = [f for f in sys.argv if 'cleanTweets' not in f]
+    getAllText(files)
 
 if __name__ == '__main__':
     main()
