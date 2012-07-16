@@ -1,0 +1,34 @@
+[1] Get data
+    - Twitter API, mining 1000 tweets for
+        - #olympics
+        - #2012olympics
+        - #londonolympics
+    - pre processing, remove stop words
+    - part of speech tagging, keep only certain lexical categories
+    - do pairwise active context (Web count based similarity)
+        - normalize to a value between 0 and 1
+    - take top 4 (as more than 4 do not help in disambiguation)
+    - for every tweet, produce (id, [keywords ...]) tuple
+
+[2] Perform the disambiguation
+    - for every tweet
+        - for every keyword
+            - pick all senses from Wikipedia for all contexts
+            - remove stop words, pick top N words from all contexts
+            - build vectors for each sense
+            - the columns are TF-IDF (ICF) scores
+            - build a vector for the keyword
+                - aggregate of the keyword and context words
+            - do a cosine similarity and pick a sense
+        - build an aggregated vector for the tweet
+
+[3] Build Wikipedia class data structure    
+    - Start from the Wikipedia class hierarchy
+    - build static vectors for all nodes (categories)
+    - build a way to navigate the hierarchy
+        - tree? something pre-existing?
+
+[4] Fine tune the disambiguation
+    - navigate the tree using cosine similarities between vectors
+    - see how deep we can go
+

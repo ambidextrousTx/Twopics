@@ -2,6 +2,7 @@ Workflow:
     - reading:  
         - Text Mining People
         - Google Scholar 'topic identification tweets'
+        - Identifying Topics in Social Media using DBpedia
     - decide on the topic
         - topic identification for tweets
     - decide on data
@@ -9,6 +10,7 @@ Workflow:
         - one from Chris's Wikipedia mining
     - decide on resources
         - Twitter API
+        - DBpedia
         - Hadoop, Mahout, Pig
         - ML clustering
         - use the Text Mining People
