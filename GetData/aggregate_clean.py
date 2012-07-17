@@ -22,25 +22,31 @@ def read_stop_words(stop_words_file):
             stop_words.append(c)
     return stop_words
 
-def clean_twitter_stop_words(line):
-    twitter_stopwords = ['RT', 'MT', '@', '#']
-    
-    
-
 def clean_stop_words(stop_words_file, tweets_file):
     # Just need to read from the input file once
-    # and call the corresponding functions on each line
     out_file = open('all_tweets.clean.txt', 'w')
     stop_words = read_stop_words(stop_words_file)
+    twitter_stopwords = ['RT', 'MT', '@', '#']
     
     with open(tweets_file, 'r') as input_file:
         counter = 0
         for line in input_file:
             line = line.strip().split(' ')[2:]
-            line = [w for w in line if w not in stop_words]
+            line = [w.lower() for w in line if w not in stop_words and w not in twitter_stopwords]
             line = ' '.join(line)
-            line = clean_twitter_stop_words(line)
-            out_file.write(line + '\n')
+            hyperlink = re.compile(r'\bhttp:\\/\\/.*\\/.+?\b')
+            twitter_entities = re.compile(r'@|#')
+            html_ent = re.compile(r'&amp;')
+            punctuation = re.compile(r',|\.|"|\'|\\|/|\||!|\?|:|')
+            alphanums = re.compile(r'*\w+\d|\d+\w')
+            line = re.sub(hyperlink, '', line)
+            line = re.sub(twitter_entities, '', line)
+            # notice the space
+            line = re.sub(punctuation, '', line)
+            line = re.sub(alphanums, '', line)
+            line = re.sub(html_ent, '', line)
+            out_file.write('{0} :: {1}\n'.format(counter, line))
+            counter += 1
 
     out_file.close()
 
