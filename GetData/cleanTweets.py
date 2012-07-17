@@ -23,7 +23,7 @@ def getAllText(files):
         with open(f, 'r') as fHandle:
             # string concatenation over a loop is extremely inefficient
             # use join instead
-            lines = ''.join(line.strip())
+            lines = ''.join(fHandle.read().strip())
             chunks = lines.split('created_at')
             print 'Found {0} chunks'.format(len(chunks))
             for chunk in chunks:

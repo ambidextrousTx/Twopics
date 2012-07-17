@@ -14,7 +14,7 @@ import sys
 import commands
 
 BASEQUERY = "http://search.twitter.com/search.json?q="
-queries = ['%23olympics', '%232012olympics', '%23londonolympics', 'olympics', '']
+queries = ['%23olympics', '%232012olympics', '%23londonolympics', 'olympics', 'london%20olympics']
 
 def callTwitterAPI():
     counter = 1
