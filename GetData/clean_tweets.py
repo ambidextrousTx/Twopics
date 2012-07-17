@@ -11,7 +11,7 @@ def error():
     print 'Exiting now.'
     sys.exit()
 
-def getAllText(files):
+def get_all_text(files):
     allTweets = []
     for f in files:
         print 'Processing %s' % f
@@ -39,7 +39,7 @@ def main():
     if len(sys.argv) < 2:
         error()
     files = [f for f in sys.argv if 'cleanTweets' not in f]
-    getAllText(files)
+    get_all_text(files)
 
 if __name__ == '__main__':
     main()

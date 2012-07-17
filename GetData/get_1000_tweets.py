@@ -16,7 +16,7 @@ import commands
 BASEQUERY = "http://search.twitter.com/search.json?q="
 queries = ['%23olympics', '%232012olympics', '%23londonolympics', 'olympics', 'london%20olympics']
 
-def callTwitterAPI():
+def call_twitter_api():
     counter = 1
     for query in queries:
         this_query = BASEQUERY + query
@@ -24,7 +24,7 @@ def callTwitterAPI():
         counter += 1
 
 def main():
-    callTwitterAPI()
+    call_twitter_api()
 
 if __name__ == '__main__':
     main()
