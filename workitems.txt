@@ -5,8 +5,18 @@
         - #londonolympics
     - remove duplicate tweets, aggregate all tweets
     - remove stop words
-    - part of speech tagging, keep only certain types of keywords(lexical categories)
-        - expand the context more by using something like SaLSA?
+    - alternative to prviously thought part of speech tagging to derive keywords:
+    - use SF-URI database to retain only interesting keywords 
+        (those that are there in the database)
+        - filter the existing SF-URI database to output only single-word, 4-character-or-more surface forms
+        - use this new data to get keywords for all tweets
+    - do query expansion?
+        - can of worms
+            - use context?
+            - use dictionary?
+            - use frequency counts?
+            - how many senses?
+        - future work
     - do pairwise active context (Web count based similarity)
         - normalize to a value between 0 and 1
     - take top 4 (as more than 4 do not help in disambiguation)
