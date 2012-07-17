@@ -5,7 +5,7 @@
         - #londonolympics
     - remove duplicate tweets, aggregate all tweets
     - remove stop words
-    - alternative to prviously thought part of speech tagging to derive keywords:
+    - alternative to previously thought part of speech tagging to derive keywords:
     - use SF-URI database to retain only interesting keywords 
         (those that are there in the database)
         - filter the existing SF-URI database to output only single-word, 4-character-or-more surface forms
