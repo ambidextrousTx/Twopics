@@ -32,13 +32,15 @@ def clean_stop_words(stop_words_file, tweets_file):
         counter = 0
         for line in input_file:
             line = line.strip().split(' ')[2:]
-            line = [w.lower() for w in line if w not in stop_words and w not in twitter_stopwords]
+            # Keeping the original letter cases from the tweets
+            # We don't want to miss out on abbreviations if any
+            line = [w for w in line if w not in stop_words and w not in twitter_stopwords]
             line = ' '.join(line)
             hyperlink = re.compile(r'\bhttp:\\/\\/.*\\/.+?\b')
             twitter_entities = re.compile(r'@|#')
             html_ent = re.compile(r'&amp;')
             punctuation = re.compile(r',|\.|"|\'|\\|/|\||!|\?|:|')
-            alphanums = re.compile(r'*\w+\d|\d+\w')
+            alphanums = re.compile(r'\w+\d|\d+\w')
 
             # not the best or perfect, but hey
             line = re.sub(hyperlink, '', line)
