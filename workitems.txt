@@ -22,10 +22,14 @@
             - use frequency counts?
             - how many senses?
         - future work
-    - do pairwise active context (Web count based similarity)
-        - normalize to a value between 0 and 1
-    - take top 4 (as more than 4 do not help in disambiguation)
-    - for every tweet, produce (id, [(keyword, [context]) ...]) tuple
+    - also future work
+        - do pairwise active context (Web count based similarity)
+            - normalize to a value between 0 and 1
+        - take top 4 (as more than 4 do not help in disambiguation)
+        - for every tweet, produce (id, [(keyword, [context]) ...]) tuple
+    - outcome
+        - tweet_id :: keyword1 keyword2 ... \n ...
+        - context for every keyword = all remaining keywords for that tweet
 
 [2] Perform the disambiguation
     - for every tweet
