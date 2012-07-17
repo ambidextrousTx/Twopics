@@ -4,7 +4,12 @@
         - #2012olympics
         - #londonolympics
     - remove duplicate tweets, aggregate all tweets
-    - remove stop words
+    - remove 
+        - stop words 
+        - hyperlinks
+        - Twitter stop words and punctuation (@, #, RT, MT)
+        - punctuation
+        - alphanumeric words
     - alternative to previously thought part of speech tagging to derive keywords:
     - use SF-URI database to retain only interesting keywords 
         (those that are there in the database)
