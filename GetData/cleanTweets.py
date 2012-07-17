@@ -2,11 +2,6 @@
 Cleaning and preprocessing the ~1300 tweets
 - get text only
 - assign ID to each text
-- remove stop words
-- part of speech tagging, keep only certain types of keywords(lexical categories)
-- do pairwise active context (web query count based similarity)
-- pick top 4 context words for each keyword
-- produce (id, [(keyword, [context]) ...]) tuples for each tweet
 """
 import re
 import sys

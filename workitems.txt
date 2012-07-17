@@ -3,8 +3,10 @@
         - #olympics
         - #2012olympics
         - #londonolympics
-    - pre processing, remove stop words
-    - part of speech tagging, keep only certain lexical categories
+    - remove duplicate tweets, aggregate all tweets
+    - remove stop words
+    - part of speech tagging, keep only certain types of keywords(lexical categories)
+        - expand the context more by using something like SaLSA?
     - do pairwise active context (Web count based similarity)
         - normalize to a value between 0 and 1
     - take top 4 (as more than 4 do not help in disambiguation)
