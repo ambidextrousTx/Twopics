@@ -39,9 +39,10 @@ def clean_stop_words(stop_words_file, tweets_file):
             html_ent = re.compile(r'&amp;')
             punctuation = re.compile(r',|\.|"|\'|\\|/|\||!|\?|:|')
             alphanums = re.compile(r'*\w+\d|\d+\w')
+
+            # not the best or perfect, but hey
             line = re.sub(hyperlink, '', line)
             line = re.sub(twitter_entities, '', line)
-            # notice the space
             line = re.sub(punctuation, '', line)
             line = re.sub(alphanums, '', line)
             line = re.sub(html_ent, '', line)
