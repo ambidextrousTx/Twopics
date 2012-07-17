@@ -21,9 +21,9 @@ def getAllText(files):
     for f in files:
         print 'Processing %s' % f
         with open(f, 'r') as fHandle:
-            lines = ''
-            for line in fHandle:
-                lines += line.strip()
+            # string concatenation over a loop is extremely inefficient
+            # use join instead
+            lines = ''.join(line.strip())
             chunks = lines.split('created_at')
             print 'Found {0} chunks'.format(len(chunks))
             for chunk in chunks:
