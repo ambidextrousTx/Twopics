@@ -29,24 +29,37 @@ def get_sanitized_pos(penn_pos):
         sanitized = 'v'
     return sanitized
 
-def explore_thesaurus_for_lexelt(word, pos):
-
-def find_words_w_syns(line, thesaurus, n):
+def explore_thesaurus_for_lexelt(word, pos, all_lexsub_elements):
+    # childNodes[1] and [3] are word and pos
+    # Derive one lexelt that matches the lexelt(word, pos)
+    # The lexelt returned should and will be a single node
+    lexelt = filter( (lambda L: L.childNodes[1].firstChild.data == word and L.childNodes[3].firstChild.data == pos), all_lexsub_elements)[0]
     syns = []
-    xml_thesaurus = minidom.parse(thesaurus)
+    senses = lexelt.getElementsByTagName('sense')
+    for sense in senses:    
+        synonyms = sense.getElementsByTagName('synonyms')
+        for syn in synonyms:
+            if ' ' not in syn:
+                syns.append(syn.firstChild.data)
+            
+    return syns
+
+def get_all_synonyms(line, xml_thesaurus):
+    syns = []
+    all_lexsub_elements = xml_thesaurus.getElementsByTagName('lexelt')
     words = line.split()
     words_pos = pos_tag(word_tokenize(words))
     for w_p in words_pos:
         pos = get_sanitized_pos(w_p[1])
         word = w_p[0]
-        syns = explore_thesaurus_for_lexelt(word, pos)
+        syns = explore_thesaurus_for_lexelt(word, pos, all_lexsub_elements)
 
 def process(thesaurus, n, tweets_file):
+    xml_thesaurus = minidom.parse(thesaurus)
     with open(tweets_file, 'r') as twf:
         for line in twf:
             line = line.strip().split(' :: ')[1]
-            words_w_syns = find_words_w_syns(line, thesaurus, n)
-            
+            all_syns = get_all_synonyms(line, xml_thesaurus)
 
 def main():
     if len(sys.args) != 4:

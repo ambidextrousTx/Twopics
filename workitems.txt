@@ -8,7 +8,13 @@
 [2] Synonym Expansion
     - Use Oxford Thesaurus to get synonyms for all words (w) possible
     - Use UNTIndexer to get top n (4) synonyms for each w
+    - Constraint: only use 3grams
+        - Using SaLSA - part of SaLSA can be reused
+        - Changes in SaLSA
+            - new synonyms.db (from Oxford)
+            - how the final results returned are handled
     - Add the synonyms to the overall tweet
+    - (future work) - take multiwords. For now, multiwords from Oxford are discarded, because they likely won't get any count from Web1T if a tweet word is replaced with multiwords
 
 [3] Cleaning
     - remove 
