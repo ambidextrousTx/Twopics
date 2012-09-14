@@ -1,11 +1,11 @@
-[1] Get data
+[1] Data Collection
     - Twitter API, mining 1000 tweets for
         - #olympics
         - #2012olympics
         - #londonolympics
     - remove duplicate tweets, aggregate all tweets
 
-[2] Synonym expansion
+[2] Synonym Expansion
     - Use Oxford Thesaurus to get synonyms for all words (w) possible
     - Use UNTIndexer to get top n (4) synonyms for each w
     - Add the synonyms to the overall tweet
@@ -18,7 +18,7 @@
         - punctuation
         - alphanumeric words
 
-[4] Keyword extraction
+[4] Keyword Extraction
     - alternative to previously thought part of speech tagging to derive keywords:
     - use SF-URI database to retain only interesting keywords 
         (those that are there in the database)
@@ -33,7 +33,7 @@
     - outcome
         - tweet_id :: keyword1 keyword2 ... \n ...
 
-[5] Perform the disambiguation
+[5] Disambiguation
     - for every tweet
         - for every keyword
             - pick all senses from Wikipedia for all contexts
