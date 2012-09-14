@@ -4,34 +4,36 @@
         - #2012olympics
         - #londonolympics
     - remove duplicate tweets, aggregate all tweets
+
+[2] Synonym expansion
+    - Use Oxford Thesaurus to get synonyms for all words (w) possible
+    - Use UNTIndexer to get top n (4) synonyms for each w
+    - Add the synonyms to the overall tweet
+
+[3] Cleaning
     - remove 
         - stop words 
         - hyperlinks
         - Twitter stop words and punctuation (@, #, RT, MT)
         - punctuation
         - alphanumeric words
+
+[4] Keyword extraction
     - alternative to previously thought part of speech tagging to derive keywords:
     - use SF-URI database to retain only interesting keywords 
         (those that are there in the database)
         - filter the existing SF-URI database to output only single-word, 4-character-or-more surface forms
         - use this new data to get keywords for all tweets
-    - do query expansion?
-        - can of worms
-            - use context?
-            - use dictionary?
-            - use frequency counts?
-            - how many senses?
-        - future work
-    - also future work
+    - future work
         - do pairwise active context (Web count based similarity)
+        - context for every keyword = all remaining keywords for that tweet
             - normalize to a value between 0 and 1
         - take top 4 (as more than 4 do not help in disambiguation)
         - for every tweet, produce (id, [(keyword, [context]) ...]) tuple
     - outcome
         - tweet_id :: keyword1 keyword2 ... \n ...
-        - context for every keyword = all remaining keywords for that tweet
 
-[2] Perform the disambiguation
+[5] Perform the disambiguation
     - for every tweet
         - for every keyword
             - pick all senses from Wikipedia for all contexts
@@ -43,13 +45,13 @@
             - do a cosine similarity and pick a sense
         - build an aggregated vector for the tweet
 
-[3] Build Wikipedia class data structure    
+[6] Build Wikipedia class data structure    
     - Start from the Wikipedia class hierarchy
     - build static vectors for all nodes (categories)
     - build a way to navigate the hierarchy
         - tree? something pre-existing?
 
-[4] Fine tune the disambiguation
+[7] Fine tune the disambiguation
     - navigate the tree using cosine similarities between vectors
     - see how deep we can go
 
