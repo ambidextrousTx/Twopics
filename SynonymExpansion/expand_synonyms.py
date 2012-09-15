@@ -36,9 +36,18 @@ def weed_out_lexelts(tweets_file):
     lexelts = []
     with open(tweets_file, 'r') as twh:
         for line in twh:    
-            line = line.strip().split(' :: ')
-            lexelts_temp = pos_tag(word_tokenize(line))
-            lexelts_temp[1] = get_sanitized_pos(lexelts_temp[1])
+            line = line.strip().split(' :: ')[1]
+            lexelts_temp = []
+            try:
+                lexelts_temp = pos_tag(word_tokenize(line))
+            except TypeError:
+                print line
+
+            # Get sanitized parts of speech, not the Treebank style
+            for tup in lexelts_temp:
+                temp_tup = ((tup[0], get_sanitized_pos(tup[1])))
+                tup = temp_tup
+    
             lexelts.extend(lexelts_temp)
     return lexelts
 
@@ -46,14 +55,18 @@ def explore_thesaurus_for_lexelt(word, pos, all_lexsub_elements):
     # childNodes[1] and [3] are word and pos
     # Derive one lexelt that matches the lexelt(word, pos)
     # The lexelt returned should and will be a single node
-    lexelt = filter( (lambda L: L.childNodes[1].firstChild.data == word and L.childNodes[3].firstChild.data == pos), all_lexsub_elements)[0]
+
     syns = []
-    senses = lexelt.getElementsByTagName('sense')
-    for sense in senses:    
-        synonyms = sense.getElementsByTagName('synonyms')
-        for syn in synonyms:
-            if ' ' not in syn:
-                syns.append(syn.firstChild.data)
+    try:
+        lexelt = filter( (lambda L: L.childNodes[1].firstChild.data == word and L.childNodes[3].firstChild.data == pos), all_lexsub_elements)[0]
+        senses = lexelt.getElementsByTagName('sense')
+        for sense in senses:    
+            synonyms = sense.getElementsByTagName('synonyms')
+            for syn in synonyms:
+                if ' ' not in syn:
+                    syns.append(syn.firstChild.data)
+    except IndexError:
+        pass
     return syns
 
 def prepare_syndb(thesaurus, lexelts):
@@ -81,16 +94,17 @@ def prepare_SaLSA_input_file(tweets_file):
         for line in twh:
             line = line.strip().split(' :: ')[1]
             fho = open('SaLSAInputFiles/{0}'.format(file_id), 'w')
-            sents = sent_tokenizer(line)
+            sents = sent_tokenizer.tokenize(line)
             for sent in sents:
                 sent_array = sent.split(' ')
                 for i in xrange(0, len(sent_array)):
                     temp_sent = ' '.join(sent_array[:i]) + ' <head>' + sent_array[i] + '</head> ' + ' '.join(sent_array[i+1:])
                     fho.write(temp_sent + '\n')
             fho.close()
+            file_id += 1
 
 def main():
-    if len(sys.args) != 3:
+    if len(sys.argv) != 3:
         error()
     thesaurus = sys.argv[1]
     tweets_file = sys.argv[2]
