@@ -9,6 +9,8 @@ using the Oxford thesaurus
 Input: SaLSA input files: 1400
 Output from SaLSA: bla bla bla, then 
 All synonyms scores = [(score, 'word'), ...] - reverse ranked
+
+n = 4
 """
 import sys
 import commands
@@ -19,7 +21,19 @@ def complain():
     sys.exit()
 
 def run_salsa(path_to_input_files): 
-    
+    files = os.listdir(path_to_input_files)
+    for f in files:
+        out = commands.getstatusoutput('/home/public/saLSa/salsa.py {0}/{1} > temp.out.SaLSA.txt'.format(path_to_input_files, f))
+        all_lines = []
+        with open('temp.out.SaLSA.txt', 'r') as fho:
+            for line in fho:
+                line = line.strip()
+                all_lines.append(line)
+
+        output_lines = filter( (lambda L: 'All synonym scores' in L), all_lines)
+        
+            
+
 
 def main():
     if len(sys.argv != 3):
