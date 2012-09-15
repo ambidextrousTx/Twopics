@@ -3,6 +3,8 @@ Ambidextrous
 Sep, 2012
 
 Use Oxford Thesaurus to get synonyms for all words (w) possible
+Create - Oxford database to feed to SaLSA
+Create - 
 Use UNTIndexer to get top n (4) synonyms for each w
 Add the synonyms to the overall tweet
 
@@ -11,6 +13,7 @@ Dependencies: Oxford XML, NLTK
 import sys
 import shelve
 from collections import defaultdict
+from nltk import data
 from nltk import word_tokenize, pos_tag
 from xml.dom import minidom
 
@@ -71,16 +74,22 @@ def prepare_SaLSA_input_file(tweets_file):
     # IDs are assigned sequentially to the tweets
     # So they should match what we have later in the
     # aggregated tweets
+
+    # Use the NLTK sentence segmenter to do it multiple times
+    # for multiple sentences in the tweet
+    sent_tokenizer = data.load('tokenizers/punkt/english.pickle')
     file_id = 0
     with open(tweets_file, 'r') as twh:
         for line in twh:
-            fho = open('SaLSAInputFiles/{0}'.format(file_id), 'w')
-
             line = line.strip().split(' :: ')[1]
-            line_array = line.split(' ')
-            for i in xrange(0, len(line_array)):
-                temp_line = ' '.join(line_array[:i]) + ' <head>' + line_array[i] + '</head> ' + ' '.join(line_array[i+1:])
-                fho.write(temp_line + '\n')
+            fho = open('SaLSAInputFiles/{0}'.format(file_id), 'w')
+            sents = sent_tokenizer(line)
+            for sent in sents:
+                sent_array = sent.split(' ')
+                for i in xrange(0, len(sent_array)):
+                    temp_sent = ' '.join(sent_array[:i]) + ' <head>' + sent_array[i] + '</head> ' + ' '.join(sent_array[i+1:])
+                    fho.write(temp_sent + '\n')
+            fho.close()
 
 def main():
     if len(sys.args) != 4:
