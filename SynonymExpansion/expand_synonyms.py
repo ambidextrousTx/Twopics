@@ -9,6 +9,8 @@ Add the synonyms to the overall tweet
 Dependencies: Oxford XML, NLTK
 """
 import sys
+import shelve
+from collections import defaultdict
 from nltk import word_tokenize, pos_tag
 from xml.dom import minidom
 
@@ -29,6 +31,16 @@ def get_sanitized_pos(penn_pos):
         sanitized = 'v'
     return sanitized
 
+def weed_out_lexelts(tweets_file):
+    lexelts = []
+    with open(tweets_file, 'r') as twh:
+        for line in twh:    
+            line = line.strip().split(' :: ')
+            lexelts_temp = pos_tag(word_tokenize(line))
+            lexelts_temp[1] = get_sanitized_pos(lexelts_temp[1])
+            lexelts.extend(lexelts_temp)
+    return lexelts
+
 def explore_thesaurus_for_lexelt(word, pos, all_lexsub_elements):
     # childNodes[1] and [3] are word and pos
     # Derive one lexelt that matches the lexelt(word, pos)
@@ -41,25 +53,34 @@ def explore_thesaurus_for_lexelt(word, pos, all_lexsub_elements):
         for syn in synonyms:
             if ' ' not in syn:
                 syns.append(syn.firstChild.data)
-            
     return syns
 
-def get_all_synonyms(line, xml_thesaurus):
-    syns = []
-    all_lexsub_elements = xml_thesaurus.getElementsByTagName('lexelt')
-    words = line.split()
-    words_pos = pos_tag(word_tokenize(words))
-    for w_p in words_pos:
-        pos = get_sanitized_pos(w_p[1])
-        word = w_p[0]
-        syns = explore_thesaurus_for_lexelt(word, pos, all_lexsub_elements)
-
-def process(thesaurus, n, tweets_file):
+def prepare_syndb(thesaurus, lexelts):
     xml_thesaurus = minidom.parse(thesaurus)
-    with open(tweets_file, 'r') as twf:
-        for line in twf:
+    pers_obj = shelve.open('oxf.syns.db')
+    temp_obj = defaultdict(dict)
+    all_lexsub_elements = xml_thesaurus.getElementsByTagName('lexelt')
+    for word, pos in lexelts:
+        syns = explore_thesaurus_for_lexelt(word, pos, all_lexsub_elements)
+        temp_obj[word][pos] = syns
+
+    pers_obj['1'] = temp_obj
+    pers_obj.close()
+
+def prepare_SaLSA_input_file(tweets_file):
+    # IDs are assigned sequentially to the tweets
+    # So they should match what we have later in the
+    # aggregated tweets
+    file_id = 0
+    with open(tweets_file, 'r') as twh:
+        for line in twh:
+            fho = open('SaLSAInputFiles/{0}'.format(file_id), 'w')
+
             line = line.strip().split(' :: ')[1]
-            all_syns = get_all_synonyms(line, xml_thesaurus)
+            line_array = line.split(' ')
+            for i in xrange(0, len(line_array)):
+                temp_line = ' '.join(line_array[:i]) + ' <head>' + line_array[i] + '</head> ' + ' '.join(line_array[i+1:])
+                fho.write(temp_line + '\n')
 
 def main():
     if len(sys.args) != 4:
@@ -68,9 +89,12 @@ def main():
     n = sys.argv[2]
     tweets_file = sys.argv[3]
 
-    process(thesaurus, n, tweets_file)
+    # List of tuples
+    lexelts = weed_out_lexelts(tweets_file)
+    # Persistent object from Oxford
+    prepare_syndb(thesaurus, lexelts)
+    # Each word is a head word - multiple files
+    prepare_SaLSA_input_file(tweets_file)
 
 if __name__ == '__main__':
     main()
-
-
