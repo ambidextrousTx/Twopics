@@ -3,6 +3,7 @@ Ambidextrous
 Sep, 2012
 
 Use Oxford Thesaurus to get synonyms for all words (w) possible
+    (that are present in the tweets themselves)
 Create - Oxford database to feed to SaLSA
 Create - SaLSA input files
 
@@ -13,6 +14,7 @@ import shelve
 from collections import defaultdict
 from nltk import data
 from nltk import word_tokenize, pos_tag
+from nltk.stem.wordnet import WordNetLemmatizer
 from xml.dom import minidom
 
 def error():
@@ -34,6 +36,7 @@ def get_sanitized_pos(penn_pos):
 
 def weed_out_lexelts(tweets_file):
     lexelts = []
+    WNL = WordNetLemmatizer()
     with open(tweets_file, 'r') as twh:
         for line in twh:    
             line = line.strip().split(' :: ')[1]
@@ -44,11 +47,18 @@ def weed_out_lexelts(tweets_file):
                 print line
 
             # Get sanitized parts of speech, not the Treebank style
-            for tup in lexelts_temp:
-                temp_tup = ((tup[0], get_sanitized_pos(tup[1])))
-                tup = temp_tup
+            # Tuples are immutable, need to make a new single-tuple list 
+            for w, p in lexelts_temp:
+                new_p = get_sanitized_pos(p)
+                new_w = w
+                try: 
+                    new_w = WNL.lemmatize(w, new_p)
+                except KeyError:
+                    pass
+                lexelts.extend([(new_w, new_p)])
     
-            lexelts.extend(lexelts_temp)
+    lexelts = list(set(lexelts))
+    print lexelts
     return lexelts
 
 def explore_thesaurus_for_lexelt(word, pos, all_lexsub_elements):
@@ -63,8 +73,13 @@ def explore_thesaurus_for_lexelt(word, pos, all_lexsub_elements):
         for sense in senses:    
             synonyms = sense.getElementsByTagName('synonyms')
             for syn in synonyms:
-                if ' ' not in syn:
-                    syns.append(syn.firstChild.data)
+                all_syns = syn.firstChild.data
+                all_syns = all_syns.replace(';', ',')
+                all_syns = all_syns.strip('.') # Get rid of the trailing .
+                all_syns = all_syns.split(', ')
+                for each_syn in all_syns:
+                    if ' ' not in each_syn:
+                        syns.append(each_syn)
     except IndexError:
         pass
     return syns
@@ -110,11 +125,17 @@ def main():
     tweets_file = sys.argv[2]
 
     # List of tuples
+    print 'Getting all tuples of the form (word, part of speech) from the tweets file'
     lexelts = weed_out_lexelts(tweets_file)
+    print 'Done'
     # Persistent object from Oxford
+    print 'Preparing the Oxford synonyms database'
     prepare_syndb(thesaurus, lexelts)
+    print 'Done'
     # Each word is a head word - multiple files
-    prepare_SaLSA_input_file(tweets_file)
+#   print 'Preparing the SaLSA input files'
+#   prepare_SaLSA_input_file(tweets_file)
+#   print 'Done'
 
 if __name__ == '__main__':
     main()
