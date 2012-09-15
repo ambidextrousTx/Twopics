@@ -11,11 +11,11 @@ Dependencies: Oxford XML, NLTK
 """
 import sys
 import shelve
-from collections import defaultdict
 from nltk import data
+from xml.dom import minidom
+from collections import defaultdict
 from nltk import word_tokenize, pos_tag
 from nltk.stem.wordnet import WordNetLemmatizer
-from xml.dom import minidom
 
 def error():
     print 'Usage: supply thesaurus_xml all_tweets_file'
@@ -82,6 +82,9 @@ def explore_thesaurus_for_lexelt(word, pos, all_lexsub_elements):
                         syns.append(each_syn)
     except IndexError:
         pass
+
+    # Keep consistent with the original SaLSA synonym db format
+    syns = ';'.join(syns)
     return syns
 
 def prepare_syndb(thesaurus, lexelts):
@@ -95,8 +98,9 @@ def prepare_syndb(thesaurus, lexelts):
 
     pers_obj['1'] = temp_obj
     pers_obj.close()
+    return temp_obj
 
-def prepare_SaLSA_input_file(tweets_file):
+def prepare_SaLSA_input_file(tweets_file, hash_obj):
     # IDs are assigned sequentially to the tweets
     # So they should match what we have later in the
     # aggregated tweets
@@ -113,8 +117,9 @@ def prepare_SaLSA_input_file(tweets_file):
             for sent in sents:
                 sent_array = sent.split(' ')
                 for i in xrange(0, len(sent_array)):
-                    temp_sent = ' '.join(sent_array[:i]) + ' <head>' + sent_array[i] + '</head> ' + ' '.join(sent_array[i+1:])
-                    fho.write(temp_sent + '\n')
+                    if sent_array[i] in hash_obj:
+                        temp_sent = ' '.join(sent_array[:i]) + ' <head>' + sent_array[i] + '</head> ' + ' '.join(sent_array[i+1:])
+                        fho.write(temp_sent + '\n')
             fho.close()
             file_id += 1
 
@@ -130,12 +135,12 @@ def main():
     print 'Done'
     # Persistent object from Oxford
     print 'Preparing the Oxford synonyms database'
-    prepare_syndb(thesaurus, lexelts)
+    hash_obj = prepare_syndb(thesaurus, lexelts)
     print 'Done'
     # Each word is a head word - multiple files
-#   print 'Preparing the SaLSA input files'
-#   prepare_SaLSA_input_file(tweets_file)
-#   print 'Done'
+    print 'Preparing the SaLSA input files'
+    prepare_SaLSA_input_file(tweets_file, hash_obj)
+    print 'Done'
 
 if __name__ == '__main__':
     main()

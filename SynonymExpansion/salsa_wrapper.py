@@ -14,6 +14,7 @@ n = 4
 """
 import sys
 import commands
+from collections import defaultdict
 
 def complain():
     print 'Usage: supply path_to_input_files all_tweets_file'
@@ -22,8 +23,10 @@ def complain():
 
 def run_salsa(path_to_input_files): 
     files = os.listdir(path_to_input_files)
+    extensions = defaultdict(dict)
     for f in files:
-        out = commands.getstatusoutput('/home/public/saLSa/salsa.py {0}/{1} > temp.out.SaLSA.txt'.format(path_to_input_files, f))
+        print 'Processing ', f
+        out = commands.getstatusoutput('python salsa.py {0}/{1} > temp.out.SaLSA.txt'.format(path_to_input_files, f))
         all_lines = []
         with open('temp.out.SaLSA.txt', 'r') as fho:
             for line in fho:
@@ -31,6 +34,12 @@ def run_salsa(path_to_input_files):
                 all_lines.append(line)
 
         output_lines = filter( (lambda L: 'All synonym scores' in L), all_lines)
+        for out_line in output_lines:
+            words_of_interest = out_line.split(' = ')[1]
+        
+
+        extensions[f] = # all words found
+        
         
             
 
