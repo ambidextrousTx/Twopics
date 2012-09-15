@@ -4,9 +4,7 @@ Sep, 2012
 
 Use Oxford Thesaurus to get synonyms for all words (w) possible
 Create - Oxford database to feed to SaLSA
-Create - 
-Use UNTIndexer to get top n (4) synonyms for each w
-Add the synonyms to the overall tweet
+Create - SaLSA input files
 
 Dependencies: Oxford XML, NLTK
 """
@@ -18,7 +16,7 @@ from nltk import word_tokenize, pos_tag
 from xml.dom import minidom
 
 def error():
-    print 'Usage: supply thesaurus_xml n all_tweets_file'
+    print 'Usage: supply thesaurus_xml all_tweets_file'
     print 'Quitting now'
     sys.exit()
 
@@ -92,11 +90,10 @@ def prepare_SaLSA_input_file(tweets_file):
             fho.close()
 
 def main():
-    if len(sys.args) != 4:
+    if len(sys.args) != 3:
         error()
     thesaurus = sys.argv[1]
-    n = sys.argv[2]
-    tweets_file = sys.argv[3]
+    tweets_file = sys.argv[2]
 
     # List of tuples
     lexelts = weed_out_lexelts(tweets_file)
